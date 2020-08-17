@@ -4,6 +4,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <deque>
 
 #include "zeek/PriorityQueue.h"
 #include "zeek/iosource/IOSource.h"
@@ -72,6 +73,8 @@ public:
 
 	void Describe(ODesc* d) const;
 
+	bool active = true;
+
 protected:
 	TimerType type{};
 	};
@@ -80,6 +83,7 @@ class TimerMgr final : public iosource::IOSource
 	{
 public:
 	TimerMgr();
+	~TimerMgr();
 
 	void Add(Timer* timer);
 
@@ -117,9 +121,9 @@ public:
 
 	double Time() const { return t ? t : 1; } // 1 > 0
 
-	size_t Size() const { return q->Size(); }
-	size_t PeakSize() const { return q->PeakSize(); }
-	size_t CumulativeNum() const { return q->CumulativeNum(); }
+	size_t Size() const { return q->Size() + q_5s.size() + q_6s.size(); }
+	size_t PeakSize() const { return peak_size; }
+	size_t CumulativeNum() const { return cumulative_num; }
 
 	double LastTimestamp() const { return last_timestamp; }
 
@@ -142,11 +146,14 @@ public:
 	void InitPostScript();
 
 private:
+
+	enum class QueueIndex { NONE, Q5, Q6, PQ };
+
 	int DoAdvance(double t, int max_expire);
 	void Remove(Timer* timer);
 
-	Timer* Remove();
-	Timer* Top();
+	Timer* Remove(QueueIndex index = QueueIndex::NONE);
+	std::pair<QueueIndex, Timer*> Top();
 
 	double t;
 	double last_timestamp;
@@ -162,7 +169,9 @@ private:
 
 	static unsigned int current_timers[NUM_TIMER_TYPES];
 	std::unique_ptr<PriorityQueue> q;
-	};
+	std::deque<Timer*> q_5s;
+	std::deque<Timer*> q_6s;
+};
 
 extern TimerMgr* timer_mgr;
 
