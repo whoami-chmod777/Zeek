@@ -1428,8 +1428,8 @@ void Manager::EndCurrentSend(ReaderFrontend* reader)
 				{
 				// Keep it. Hence - we quit and simply go to the next entry of lastDict
 				// ah well - and we have to add the entry to currDict...
-				stream->currDict->Insert(lastDictIdxKey.get(),
-				                         stream->lastDict->RemoveEntry(lastDictIdxKey.get()));
+				stream->currDict->Insert(lastDictIdxKey,
+				                         stream->lastDict->RemoveEntry(lastDictIdxKey));
 				continue;
 				}
 			}
@@ -1444,7 +1444,7 @@ void Manager::EndCurrentSend(ReaderFrontend* reader)
 			}
 
 		stream->tab->Remove(*ih->idxkey);
-		stream->lastDict->Remove(lastDictIdxKey.get()); // delete in next line
+		stream->lastDict->Remove(lastDictIdxKey); // delete in next line
 		delete ih;
 		}
 
