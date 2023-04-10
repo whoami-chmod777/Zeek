@@ -51,13 +51,12 @@ refine flow DHCP_Flow += {
 		if ( dhcp_message )
 			{
 			std::string mac_str = zeek::fmt_mac(${msg.chaddr}.data(), ${msg.chaddr}.length());
-			double secs = static_cast<double>(${msg.secs});
 
 			auto dhcp_msg_val = zeek::make_intrusive<zeek::RecordVal>(zeek::BifType::Record::DHCP::Msg);
 			dhcp_msg_val->Assign(0, ${msg.op});
 			dhcp_msg_val->Assign(1, ${msg.type});
 			dhcp_msg_val->Assign(2, ${msg.xid});
-			dhcp_msg_val->AssignInterval(3, secs);
+			dhcp_msg_val->AssignInterval(3, ${msg.secs}, zeek::time::Seconds);
 			dhcp_msg_val->Assign(4, ${msg.flags});
 			dhcp_msg_val->Assign(5, zeek::make_intrusive<zeek::AddrVal>(htonl(${msg.ciaddr})));
 			dhcp_msg_val->Assign(6, zeek::make_intrusive<zeek::AddrVal>(htonl(${msg.yiaddr})));

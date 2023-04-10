@@ -508,9 +508,9 @@ void ICMPAnalyzer::RouterAdvert(double t, const struct icmp* icmpp, int len, int
 		val_mgr->Count((icmpp->icmp_wpa & 0x18) >> 3), // Pref
 		val_mgr->Bool(icmpp->icmp_wpa & 0x04), // Proxy
 		val_mgr->Count(icmpp->icmp_wpa & 0x02), // Reserved
-		make_intrusive<IntervalVal>((double)ntohs(icmpp->icmp_lifetime), Seconds),
-		make_intrusive<IntervalVal>((double)ntohl(reachable), Milliseconds),
-		make_intrusive<IntervalVal>((double)ntohl(retrans), Milliseconds),
+		make_intrusive<IntervalVal>(ntohs(icmpp->icmp_lifetime), zeek::time::Seconds),
+		make_intrusive<IntervalVal>(ntohl(reachable), zeek::time::Milliseconds),
+		make_intrusive<IntervalVal>(ntohl(retrans), zeek::time::Milliseconds),
 		BuildNDOptionsVal(caplen - opt_offset, data + opt_offset, adapter));
 	}
 
@@ -723,9 +723,9 @@ zeek::VectorValPtr ICMPAnalyzer::BuildNDOptionsVal(int caplen, const u_char* dat
 						info->Assign(1, val_mgr->Bool(L_flag));
 						info->Assign(2, val_mgr->Bool(A_flag));
 						info->Assign(
-							3, make_intrusive<IntervalVal>((double)ntohl(valid_life), Seconds));
-						info->Assign(
-							4, make_intrusive<IntervalVal>((double)ntohl(prefer_life), Seconds));
+							3, make_intrusive<IntervalVal>(ntohl(valid_life), zeek::time::Seconds));
+						info->Assign(4, make_intrusive<IntervalVal>(ntohl(prefer_life),
+						                                            zeek::time::Seconds));
 						info->Assign(5, make_intrusive<AddrVal>(IPAddr(prefix)));
 						rv->Assign(3, std::move(info));
 						}

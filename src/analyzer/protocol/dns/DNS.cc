@@ -614,10 +614,10 @@ bool DNS_Interpreter::ParseRR_SOA(detail::DNS_MsgInfo* msg, const u_char*& data,
 		r->Assign(0, new String(mname, mname_end - mname, true));
 		r->Assign(1, new String(rname, rname_end - rname, true));
 		r->Assign(2, serial);
-		r->AssignInterval(3, double(refresh));
-		r->AssignInterval(4, double(retry));
-		r->AssignInterval(5, double(expire));
-		r->AssignInterval(6, double(minimum));
+		r->AssignInterval(3, refresh, zeek::time::Seconds);
+		r->AssignInterval(4, retry, zeek::time::Seconds);
+		r->AssignInterval(5, expire, zeek::time::Seconds);
+		r->AssignInterval(6, minimum, zeek::time::Seconds);
 
 		analyzer->EnqueueConnEvent(dns_SOA_reply, analyzer->ConnVal(), msg->BuildHdrVal(),
 		                           msg->BuildAnswerVal(), std::move(r));
@@ -1844,7 +1844,7 @@ RecordValPtr DNS_MsgInfo::BuildAnswerVal()
 	r->Assign(1, query_name);
 	r->Assign(2, atype);
 	r->Assign(3, aclass);
-	r->AssignInterval(4, double(ttl));
+	r->AssignInterval(4, ttl, zeek::time::Seconds);
 
 	return r;
 	}
@@ -1879,7 +1879,7 @@ RecordValPtr DNS_MsgInfo::BuildEDNS_Val()
 	r->Assign(4, return_error);
 	r->Assign(5, version);
 	r->Assign(6, z);
-	r->AssignInterval(7, double(ttl));
+	r->AssignInterval(7, ttl, zeek::time::Seconds);
 	r->Assign(8, is_query);
 
 	return r;
@@ -1927,7 +1927,8 @@ RecordValPtr DNS_MsgInfo::BuildTSIG_Val(struct TSIG_DATA* tsig)
 	{
 	static auto dns_tsig_additional = id::find_type<RecordType>("dns_tsig_additional");
 	auto r = make_intrusive<RecordVal>(dns_tsig_additional);
-	double rtime = tsig->time_s + tsig->time_ms / 1000.0;
+	int64_t rtime = (tsig->time_s * zeek::time::Seconds) +
+	                (tsig->time_ms * zeek::time::Milliseconds);
 
 	// r->Assign(0, answer_type);
 	r->Assign(0, query_name);
@@ -1935,7 +1936,7 @@ RecordValPtr DNS_MsgInfo::BuildTSIG_Val(struct TSIG_DATA* tsig)
 	r->Assign(2, tsig->alg_name);
 	r->Assign(3, tsig->sig);
 	r->AssignTime(4, rtime);
-	r->AssignTime(5, double(tsig->fudge));
+	r->AssignTime(5, tsig->fudge, zeek::time::Seconds);
 	r->Assign(6, tsig->orig_id);
 	r->Assign(7, tsig->rr_error);
 	r->Assign(8, is_query);
@@ -1953,9 +1954,9 @@ RecordValPtr DNS_MsgInfo::BuildRRSIG_Val(RRSIG_DATA* rrsig)
 	r->Assign(2, rrsig->type_covered);
 	r->Assign(3, rrsig->algorithm);
 	r->Assign(4, rrsig->labels);
-	r->AssignInterval(5, double(rrsig->orig_ttl));
-	r->AssignTime(6, double(rrsig->sig_exp));
-	r->AssignTime(7, double(rrsig->sig_incep));
+	r->AssignInterval(5, rrsig->orig_ttl, zeek::time::Seconds);
+	r->AssignTime(6, rrsig->sig_exp, zeek::time::Seconds);
+	r->AssignTime(7, rrsig->sig_incep, zeek::time::Seconds);
 	r->Assign(8, rrsig->key_tag);
 	r->Assign(9, rrsig->signer_name);
 	r->Assign(10, rrsig->signature);

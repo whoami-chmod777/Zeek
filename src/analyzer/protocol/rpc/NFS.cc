@@ -124,7 +124,7 @@ bool NFS_Interp::RPC_BuildCall(RPC_CallInfo* c, const u_char*& buf, int& n)
 	}
 
 bool NFS_Interp::RPC_BuildReply(RPC_CallInfo* c, BifEnum::rpc_status rpc_status, const u_char*& buf,
-                                int& n, double start_time, double last_time, int reply_len)
+                                int& n, int64_t start_time, int64_t last_time, int reply_len)
 	{
 	EventHandlerPtr event = nullptr;
 	ValPtr reply;
@@ -306,8 +306,8 @@ StringValPtr NFS_Interp::nfs3_file_data(const u_char*& buf, int& n, uint64_t off
 	}
 
 Args NFS_Interp::event_common_vl(RPC_CallInfo* c, BifEnum::rpc_status rpc_status,
-                                 BifEnum::NFS3::status_t nfs_status, double rep_start_time,
-                                 double rep_last_time, int reply_len, int extra_elements)
+                                 BifEnum::NFS3::status_t nfs_status, int64_t rep_start_time,
+                                 int64_t rep_last_time, int reply_len, int extra_elements)
 	{
 	// Returns a new val_list that already has a conn_val, and nfs3_info.
 	// These are the first parameters for each nfs_* event ...
@@ -794,14 +794,14 @@ uint64_t NFS_Interp::ExtractUint64(const u_char*& buf, int& n)
 	return extract_XDR_uint64(buf, n);
 	}
 
-double NFS_Interp::ExtractTime(const u_char*& buf, int& n)
+int64_t NFS_Interp::ExtractTime(const u_char*& buf, int& n)
 	{
 	return extract_XDR_time(buf, n);
 	}
 
-double NFS_Interp::ExtractInterval(const u_char*& buf, int& n)
+int64_t NFS_Interp::ExtractInterval(const u_char*& buf, int& n)
 	{
-	return double(extract_XDR_uint32(buf, n));
+	return int64_t(extract_XDR_uint32(buf, n));
 	}
 
 bool NFS_Interp::ExtractBool(const u_char*& buf, int& n)

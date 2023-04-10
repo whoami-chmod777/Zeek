@@ -121,6 +121,11 @@ double File::GetLastActivityTime() const
 	return val->GetFieldAs<TimeVal>(last_active_idx);
 	}
 
+int64_t File::LastActivityTime() const
+	{
+	return val->GetFieldAs<TimeVal>(last_active_idx);
+	}
+
 bool File::UpdateConnectionFields(Connection* conn, bool is_orig)
 	{
 	if ( ! conn )

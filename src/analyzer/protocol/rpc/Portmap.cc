@@ -78,8 +78,8 @@ bool PortmapperInterp::RPC_BuildCall(RPC_CallInfo* c, const u_char*& buf, int& n
 	}
 
 bool PortmapperInterp::RPC_BuildReply(RPC_CallInfo* c, BifEnum::rpc_status status,
-                                      const u_char*& buf, int& n, double start_time,
-                                      double last_time, int reply_len)
+                                      const u_char*& buf, int& n, int64_t start_time,
+                                      int64_t last_time, int reply_len)
 	{
 	EventHandlerPtr event;
 	ValPtr reply;

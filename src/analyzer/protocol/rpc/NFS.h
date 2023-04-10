@@ -18,14 +18,14 @@ public:
 protected:
 	bool RPC_BuildCall(RPC_CallInfo* c, const u_char*& buf, int& n) override;
 	bool RPC_BuildReply(RPC_CallInfo* c, BifEnum::rpc_status rpc_status, const u_char*& buf, int& n,
-	                    double start_time, double last_time, int reply_len) override;
+	                    int64_t start_time, int64_t last_time, int reply_len) override;
 
 	// Returns a new val_list that already has a conn_val, rpc_status and
 	// nfs_status. These are the first parameters for each nfs_* event
 	// ...
 	Args event_common_vl(RPC_CallInfo* c, BifEnum::rpc_status rpc_status,
-	                     BifEnum::NFS3::status_t nfs_status, double rep_start_time,
-	                     double rep_last_time, int reply_len, int extra_elements);
+	                     BifEnum::NFS3::status_t nfs_status, int64_t rep_start_time,
+	                     int64_t rep_last_time, int reply_len, int extra_elements);
 
 	// These methods parse the appropriate NFSv3 "type" out of buf. If
 	// there are any errors (i.e., buffer to short, etc), buf will be set
@@ -75,8 +75,8 @@ protected:
 
 	uint32_t ExtractUint32(const u_char*& buf, int& n);
 	uint64_t ExtractUint64(const u_char*& buf, int& n);
-	double ExtractTime(const u_char*& buf, int& n);
-	double ExtractInterval(const u_char*& buf, int& n);
+	int64_t ExtractTime(const u_char*& buf, int& n);
+	int64_t ExtractInterval(const u_char*& buf, int& n);
 	bool ExtractBool(const u_char*& buf, int& n);
 	};
 

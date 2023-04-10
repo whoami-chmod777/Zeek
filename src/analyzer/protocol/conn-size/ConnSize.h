@@ -24,8 +24,24 @@ public:
 	void SetByteAndPacketThreshold(uint64_t threshold, bool bytes, bool orig);
 	uint64_t GetByteAndPacketThreshold(bool bytes, bool orig);
 
-	void SetDurationThreshold(double duration);
-	double GetDurationThreshold() { return duration_thresh; };
+	[[deprecated("Remove in v6.1. Use the version that takes a int64_t instead.")]] void
+	SetDurationThreshold(double duration);
+	[[deprecated("Remove in v6.1. Use the version that returns a int64_t instead.")]] double
+	GetDurationThreshold() const
+		{
+		return duration_thresh;
+		}
+
+	/**
+	 * Set the duration threshold.
+	 * @param duration the new threshold in seconds.
+	 */
+	void SetDurationThreshold(int64_t duration);
+
+	/**
+	 * Get the duration threshold, in seconds.
+	 */
+	int64_t DurationThreshold() const { return duration_thresh; }
 
 	static analyzer::Analyzer* Instantiate(Connection* conn) { return new ConnSize_Analyzer(conn); }
 
@@ -46,8 +62,8 @@ protected:
 	uint64_t orig_pkts_thresh;
 	uint64_t resp_pkts_thresh;
 
-	double start_time;
-	double duration_thresh;
+	int64_t start_time;
+	int64_t duration_thresh;
 	};
 
 	} // namespace zeek::analyzer::conn_size

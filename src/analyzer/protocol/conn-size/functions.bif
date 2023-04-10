@@ -139,7 +139,7 @@ function get_current_conn_duration_threshold%(cid: conn_id%): interval
 	%{
 	zeek::analyzer::Analyzer* a = GetConnsizeAnalyzer(cid);
 	if ( ! a )
-		return zeek::make_intrusive<zeek::IntervalVal>(0.0);
+		return zeek::make_intrusive<zeek::IntervalVal>(0);
 
-	return zeek::make_intrusive<zeek::IntervalVal>(static_cast<zeek::analyzer::conn_size::ConnSize_Analyzer*>(a)->GetDurationThreshold());
+	return zeek::make_intrusive<zeek::IntervalVal>(static_cast<zeek::analyzer::conn_size::ConnSize_Analyzer*>(a)->DurationThreshold());
 	%}

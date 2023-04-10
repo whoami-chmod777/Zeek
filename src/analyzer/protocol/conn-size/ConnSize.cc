@@ -154,6 +154,14 @@ uint64_t ConnSize_Analyzer::GetByteAndPacketThreshold(bool bytes, bool orig)
 
 void ConnSize_Analyzer::SetDurationThreshold(double duration)
 	{
+	duration_thresh = static_cast<int64_t>(duration);
+
+	// for duration thresholds, it does not matter which direction we check.
+	CheckThresholds(true);
+	}
+
+void ConnSize_Analyzer::SetDurationThreshold(int64_t duration)
+	{
 	duration_thresh = duration;
 
 	// for duration thresholds, it does not matter which direction we check.

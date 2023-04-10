@@ -17,14 +17,14 @@ public:
 protected:
 	bool RPC_BuildCall(RPC_CallInfo* c, const u_char*& buf, int& n) override;
 	bool RPC_BuildReply(RPC_CallInfo* c, BifEnum::rpc_status rpc_status, const u_char*& buf, int& n,
-	                    double start_time, double last_time, int reply_len) override;
+	                    int64_t start_time, int64_t last_time, int reply_len) override;
 
 	// Returns a new arg list that already has a conn_val, rpc_status and
 	// mount_status. These are the first parameters for each mount_* event
 	// ...
 	Args event_common_vl(RPC_CallInfo* c, BifEnum::rpc_status rpc_status,
-	                     BifEnum::MOUNT3::status_t mount_status, double rep_start_time,
-	                     double rep_last_time, int reply_len, int extra_elements);
+	                     BifEnum::MOUNT3::status_t mount_status, int64_t rep_start_time,
+	                     int64_t rep_last_time, int reply_len, int extra_elements);
 
 	// These methods parse the appropriate MOUNTv3 "type" out of buf. If
 	// there are any errors (i.e., buffer to short, etc), buf will be set

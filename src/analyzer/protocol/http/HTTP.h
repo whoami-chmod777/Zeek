@@ -150,7 +150,7 @@ protected:
 
 	char* entity_data_buffer;
 
-	double start_time;
+	int64_t start_time;
 
 	int64_t body_length; // total length of entity bodies
 	int64_t header_length; // total length of headers, including the request/reply line

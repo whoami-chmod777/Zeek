@@ -336,7 +336,8 @@ void SampleLogger::SegmentProfile(const char* /* name */, const Location* /* loc
 	{
 	if ( load_sample )
 		event_mgr.Enqueue(load_sample, IntrusivePtr{NewRef{}, load_samples},
-		                  make_intrusive<IntervalVal>(dtime, Seconds), val_mgr->Int(dmem));
+		                  make_intrusive<IntervalVal>(dtime, zeek::time::Seconds),
+		                  val_mgr->Int(dmem));
 	}
 
 void SegmentProfiler::Init()

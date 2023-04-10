@@ -184,7 +184,9 @@ struct val_converter
 
 		using namespace std::chrono;
 		auto s = duration_cast<broker::fractional_seconds>(a.time_since_epoch());
-		return make_intrusive<TimeVal>(s.count());
+		// TODO: this is kinda ugly
+		return make_intrusive<TimeVal>(static_cast<int64_t>(s.count() * zeek::time::Seconds),
+		                               zeek::time::Nanoseconds);
 		}
 
 	result_type operator()(broker::timespan& a)
@@ -194,7 +196,8 @@ struct val_converter
 
 		using namespace std::chrono;
 		auto s = duration_cast<broker::fractional_seconds>(a);
-		return make_intrusive<IntervalVal>(s.count());
+		return make_intrusive<IntervalVal>(static_cast<int64_t>(s.count() * zeek::time::Seconds),
+		                                   zeek::time::Nanoseconds);
 		}
 
 	result_type operator()(broker::enum_value& a)

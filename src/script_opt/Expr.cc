@@ -462,9 +462,9 @@ ValPtr Expr::MakeZero(TypeTag t) const
 		case TYPE_DOUBLE:
 			return make_intrusive<DoubleVal>(0.0);
 		case TYPE_TIME:
-			return make_intrusive<TimeVal>(0.0);
+			return make_intrusive<TimeVal>(0);
 		case TYPE_INTERVAL:
-			return make_intrusive<IntervalVal>(0.0, 1.0);
+			return make_intrusive<IntervalVal>(0, time::Seconds);
 
 		default:
 			reporter->InternalError("bad call to MakeZero");

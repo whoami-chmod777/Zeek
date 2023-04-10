@@ -84,7 +84,12 @@ public:
 	/**
 	 * @return value of "last_active" field in #val record;
 	 */
-	double GetLastActivityTime() const;
+	[[deprecated("Remove in v6.1. Use LastActivitTime().")]] double GetLastActivityTime() const;
+
+	/**
+	 * @return value of "last_active" field in #val record;
+	 */
+	int64_t LastActivityTime() const;
 
 	/**
 	 * Refreshes "last_active" field of #val record with current network time.

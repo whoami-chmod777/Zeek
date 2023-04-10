@@ -210,7 +210,7 @@ ValPtr ZVal::ToVal(const TypePtr& t) const
 			return make_intrusive<DoubleVal>(double_val);
 
 		case TYPE_INTERVAL:
-			return make_intrusive<IntervalVal>(double_val, Seconds);
+			return make_intrusive<IntervalVal>(double_val, zeek::time::Seconds);
 
 		case TYPE_TIME:
 			return make_intrusive<TimeVal>(double_val);

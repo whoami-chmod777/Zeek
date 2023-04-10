@@ -17,7 +17,7 @@ public:
 protected:
 	bool RPC_BuildCall(RPC_CallInfo* c, const u_char*& buf, int& n) override;
 	bool RPC_BuildReply(RPC_CallInfo* c, BifEnum::rpc_status success, const u_char*& buf, int& n,
-	                    double start_time, double last_time, int reply_len) override;
+	                    int64_t start_time, int64_t last_time, int reply_len) override;
 	uint32_t CheckPort(uint32_t port);
 
 	void Event(EventHandlerPtr f, ValPtr request, BifEnum::rpc_status status, ValPtr reply);

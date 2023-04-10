@@ -45,7 +45,7 @@ uint64_t zeek::analyzer::rpc::extract_XDR_uint64(const u_char*& buf, int& len)
 	return (uhi << 32) + ulo;
 	}
 
-double zeek::analyzer::rpc::extract_XDR_time(const u_char*& buf, int& len)
+int64_t zeek::analyzer::rpc::extract_XDR_time(const u_char*& buf, int& len)
 	{
 	if ( ! buf || len < 8 )
 		{
@@ -56,7 +56,7 @@ double zeek::analyzer::rpc::extract_XDR_time(const u_char*& buf, int& len)
 	uint32_t uhi = extract_XDR_uint32(buf, len);
 	uint32_t ulo = extract_XDR_uint32(buf, len);
 
-	return double(uhi) + double(ulo) / 1e9;
+	return (uhi * zeek::time::Seconds) + ulo;
 	}
 
 const u_char* zeek::analyzer::rpc::extract_XDR_opaque(const u_char*& buf, int& len, int& n,

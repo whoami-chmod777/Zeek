@@ -51,7 +51,9 @@ zeek::ValPtr GetTimeFromAsn1(zeek::StringVal* atime, int64 usecs)
 	if ( !lResult )
 		lResult = 0;
 
-	return zeek::make_intrusive<zeek::TimeVal>(double(lResult + double(usecs/100000.0)));
+	// Convert time in seconds to nanoseconds, add usecs as well.
+	int64_t final_time = (static_cast<int64_t>(lResult) * 1000000000) + (usecs * 1000);
+	return zeek::make_intrusive<zeek::TimeVal>(final_time);
 	}
 
 %}

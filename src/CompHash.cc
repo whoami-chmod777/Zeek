@@ -207,7 +207,7 @@ bool CompositeHash::RecoverOneVal(const HashKey& hk, Type* t, ValPtr* pval, bool
 			hk.Read("double", d);
 
 			if ( tag == TYPE_INTERVAL )
-				*pval = make_intrusive<IntervalVal>(d, 1.0);
+				*pval = make_intrusive<IntervalVal>(d, zeek::time::Seconds);
 			else if ( tag == TYPE_TIME )
 				*pval = make_intrusive<TimeVal>(d);
 			else

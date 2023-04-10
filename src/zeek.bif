@@ -3469,7 +3469,7 @@ function strptime%(fmt: string, d: string%) : time
 	     ! strptime(d->CheckString(), fmt->CheckString(), &t) )
 		{
 		zeek::reporter->Warning("strptime conversion failed: fmt:%s d:%s", fmt->CheckString(), d->CheckString());
-		return zeek::make_intrusive<zeek::TimeVal>(0.0);
+		return zeek::make_intrusive<zeek::TimeVal>(0);
 		}
 
 	double ret = mktime(&t);
@@ -4790,7 +4790,7 @@ function set_inactivity_timeout%(cid: conn_id, t: interval%): interval
 	%{
 	Connection* c = session_mgr->FindConnection(cid);
 	if ( ! c )
-		return zeek::make_intrusive<zeek::IntervalVal>(0.0);
+		return zeek::make_intrusive<zeek::IntervalVal>(0);
 
 	double old_timeout = c->InactivityTimeout();
 	c->SetInactivityTimeout(t);

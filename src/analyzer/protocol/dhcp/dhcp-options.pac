@@ -413,9 +413,7 @@ refine casetype OptionValue += {
 refine flow DHCP_Flow += {
 	function process_lease_option(v: OptionValue): bool
 		%{
-		double lease = static_cast<double>(${v.lease});
-		${context.flow}->options->AssignInterval(11, lease);
-
+		${context.flow}->options->AssignInterval(11, ${v.lease}, zeek::time::Seconds);
 		return true;
 		%}
 };
@@ -545,9 +543,7 @@ refine casetype OptionValue += {
 refine flow DHCP_Flow += {
 	function process_renewal_time_option(v: OptionValue): bool
 		%{
-		double renewal_time = static_cast<double>(${v.renewal_time});
-		${context.flow}->options->AssignInterval(16, renewal_time);
-
+		${context.flow}->options->AssignInterval(16, ${v.renewal_time}, zeek::time::Seconds);
 		return true;
 		%}
 };
@@ -570,9 +566,7 @@ refine casetype OptionValue += {
 refine flow DHCP_Flow += {
 	function process_rebinding_time_option(v: OptionValue): bool
 		%{
-		double rebinding_time = static_cast<double>(${v.rebinding_time});
-		${context.flow}->options->AssignInterval(17, rebinding_time);
-
+		${context.flow}->options->AssignInterval(17, ${v.rebinding_time}, zeek::time::Seconds);
 		return true;
 		%}
 };

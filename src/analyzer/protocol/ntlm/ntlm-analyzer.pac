@@ -10,11 +10,14 @@
 		{
 		double secs = (ts / 10000000.0);
 
-		// Zeek can't support times back to the 1600's
-		// so we subtract a lot of seconds.
-		auto zeek_ts = zeek::make_intrusive<zeek::TimeVal>(secs - 11644473600.0);
+		// Zeek supports time back to 1677, but a FILETIME can go back to 1601/1/1.
+		// Adjust for that by subtracting a lot of seconds.
+		ts -= 2421101563;
 
-		return zeek_ts;
+		// Time here is also in 100ns increments but we store them in nanoseconds.
+		ts *= 100;
+
+		return zeek::make_intrusive<zeek::TimeVal>(ts);
 		}
 
 	zeek::RecordValPtr build_version_record(NTLM_Version* val)

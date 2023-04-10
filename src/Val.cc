@@ -621,8 +621,9 @@ void IntervalVal::ValDescribe(ODesc* d) const
 	using unit_word = std::pair<double, const char*>;
 
 	constexpr std::array<unit_word, 6> units = {
-		unit_word{Days, "day"},    unit_word{Hours, "hr"},          unit_word{Minutes, "min"},
-		unit_word{Seconds, "sec"}, unit_word{Milliseconds, "msec"}, unit_word{Microseconds, "usec"},
+		unit_word{zeek::time::Days, "day"},          unit_word{zeek::time::Hours, "hr"},
+		unit_word{zeek::time::Minutes, "min"},       unit_word{zeek::time::Seconds, "sec"},
+		unit_word{zeek::time::Milliseconds, "msec"}, unit_word{zeek::time::Microseconds, "usec"},
 	};
 
 	double v = AsDouble();

@@ -566,7 +566,7 @@ void OCSP::ParseResponse(OCSP_RESPONSE* resp)
 			}
 		else
 			{
-			rvl.emplace_back(make_intrusive<TimeVal>(0.0));
+			rvl.emplace_back(make_intrusive<TimeVal>(0));
 			rvl.emplace_back(make_intrusive<StringVal>(0, ""));
 			}
 
@@ -574,13 +574,13 @@ void OCSP::ParseResponse(OCSP_RESPONSE* resp)
 			rvl.emplace_back(
 				make_intrusive<TimeVal>(GetTimeFromAsn1(this_update, GetFile(), reporter)));
 		else
-			rvl.emplace_back(make_intrusive<TimeVal>(0.0));
+			rvl.emplace_back(make_intrusive<TimeVal>(0));
 
 		if ( next_update )
 			rvl.emplace_back(
 				make_intrusive<TimeVal>(GetTimeFromAsn1(next_update, GetFile(), reporter)));
 		else
-			rvl.emplace_back(make_intrusive<TimeVal>(0.0));
+			rvl.emplace_back(make_intrusive<TimeVal>(0));
 
 		if ( ocsp_response_certificate )
 			event_mgr.Enqueue(ocsp_response_certificate, std::move(rvl));

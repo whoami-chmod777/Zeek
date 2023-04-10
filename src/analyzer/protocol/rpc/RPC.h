@@ -58,7 +58,7 @@ enum
 class RPC_CallInfo
 	{
 public:
-	RPC_CallInfo(uint32_t xid, const u_char*& buf, int& n, double start_time, double last_time,
+	RPC_CallInfo(uint32_t xid, const u_char*& buf, int& n, int64_t start_time, int64_t last_time,
 	             int rpc_len);
 	~RPC_CallInfo();
 
@@ -81,10 +81,10 @@ public:
 	const std::string& MachineName() const { return machinename; }
 	const std::vector<int>& AuxGIDs() const { return auxgids; }
 
-	double StartTime() const { return start_time; }
-	void SetStartTime(double t) { start_time = t; }
-	double LastTime() const { return last_time; }
-	void SetLastTime(double t) { last_time = t; }
+	int64_t StartTime() const { return start_time; }
+	void SetStartTime(int64_t t) { start_time = t; }
+	int64_t LastTime() const { return last_time; }
+	void SetLastTime(int64_t t) { last_time = t; }
 	int CallLen() const { return call_n; }
 	int RPCLen() const { return rpc_len; }
 	int HeaderLen() const { return header_len; }
@@ -102,8 +102,8 @@ protected:
 	uint32_t verf_flavor = 0;
 	u_char* call_buf; // copy of original call buffer
 	std::string machinename;
-	double start_time;
-	double last_time;
+	int64_t start_time;
+	int64_t last_time;
 	int rpc_len = 0; // size of the full RPC call, incl. xid and msg_type
 	int call_n = 0; // size of call buf
 	int header_len = 0; // size of data before the arguments
@@ -121,15 +121,15 @@ public:
 	// Delivers the given RPC.  Returns true if "len" bytes were
 	// enough, false otherwise.  "is_orig" is true if the data is
 	// from the originator of the connection.
-	int DeliverRPC(const u_char* data, int len, int caplen, bool is_orig, double start_time,
-	               double last_time);
+	int DeliverRPC(const u_char* data, int len, int caplen, bool is_orig, int64_t start_time,
+	               int64_t last_time);
 
 	void Timeout();
 
 protected:
 	virtual bool RPC_BuildCall(RPC_CallInfo* c, const u_char*& buf, int& n) = 0;
 	virtual bool RPC_BuildReply(RPC_CallInfo* c, BifEnum::rpc_status success, const u_char*& buf,
-	                            int& n, double start_time, double last_time, int reply_len) = 0;
+	                            int& n, int64_t start_time, int64_t last_time, int reply_len) = 0;
 
 	void Event_RPC_Dialogue(RPC_CallInfo* c, BifEnum::rpc_status status, int reply_len);
 	void Event_RPC_Call(RPC_CallInfo* c);
@@ -251,8 +251,8 @@ protected:
 	detail::RPC_Reasm_Buffer msg_buf; // reassembles RPC messages
 	state_t state;
 
-	double start_time;
-	double last_time;
+	int64_t start_time;
+	int64_t last_time;
 
 	resync_state_t resync_state;
 	int resync_toskip;
@@ -270,7 +270,7 @@ protected:
 	void DeliverPacket(int len, const u_char* data, bool orig, uint64_t seq, const IP_Hdr* ip,
 	                   int caplen) override;
 
-	void ExpireTimer(double t);
+	void ExpireTimer(int64_t t);
 
 	detail::RPC_Interpreter* interp;
 

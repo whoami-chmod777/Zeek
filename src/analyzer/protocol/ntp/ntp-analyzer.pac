@@ -3,6 +3,7 @@
 	#include <cmath>
 	#define FRAC_16 pow(2,-16)
 	#define FRAC_32 pow(2,-32)
+
 	// NTP defines the epoch from 1900, not 1970
 	#define EPOCH_OFFSET -2208988800
 %}
@@ -20,15 +21,25 @@
 	zeek::ValPtr proc_ntp_short(const NTP_Short_Time* t)
 		{
 		if ( t->seconds() == 0 && t->fractions() == 0 )
-			return zeek::make_intrusive<zeek::IntervalVal>(0.0);
-		return zeek::make_intrusive<zeek::IntervalVal>(t->seconds() + t->fractions()*FRAC_16);
+			return zeek::make_intrusive<zeek::IntervalVal>(0);
+
+		// Convert seconds to nanoseconds before storing it in the IntervalVal
+		int64_t full_t = static_cast<int64_t>(t->seconds() * zeek::time::Seconds);
+		full_t += static_cast<int64_t>(t->fractions() * FRAC_16 * zeek::time::Seconds);
+
+		return zeek::make_intrusive<zeek::IntervalVal>(full_t);
 		}
 
 	zeek::ValPtr proc_ntp_timestamp(const NTP_Time* t)
 		{
 		if ( t->seconds() == 0 && t->fractions() == 0)
-			return zeek::make_intrusive<zeek::TimeVal>(0.0);
-		return zeek::make_intrusive<zeek::TimeVal>(EPOCH_OFFSET + t->seconds() + t->fractions()*FRAC_32);
+			return zeek::make_intrusive<zeek::TimeVal>(0);
+
+		// Convert seconds to nanoseconds before storing it in the IntervalVal
+		int64_t full_t = static_cast<int64_t>((EPOCH_OFFSET + t->seconds()) * zeek::time::Seconds);
+		full_t += static_cast<int64_t>(t->fractions() * FRAC_32 * zeek::time::Seconds);
+
+		return zeek::make_intrusive<zeek::TimeVal>(full_t);
 		}
 
 	// This builds the standard msg record
@@ -37,8 +48,8 @@
 		auto rv = zeek::make_intrusive<zeek::RecordVal>(zeek::BifType::Record::NTP::StandardMessage);
 
 		rv->Assign(0, ${nsm.stratum});
-		rv->AssignInterval(1, pow(2, ${nsm.poll}));
-		rv->AssignInterval(2, pow(2, ${nsm.precision}));
+		rv->AssignInterval(1, static_cast<int64_t>(pow(2, ${nsm.poll}) * zeek::time::Seconds));
+		rv->AssignInterval(2, static_cast<int64_t>(pow(2, ${nsm.precision}) * zeek::time::Seconds));
 		rv->Assign(3, proc_ntp_short(${nsm.root_delay}));
 		rv->Assign(4, proc_ntp_short(${nsm.root_dispersion}));
 

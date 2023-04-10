@@ -29,8 +29,8 @@ namespace zeek::analyzer::rpc
 namespace detail
 	{
 
-RPC_CallInfo::RPC_CallInfo(uint32_t arg_xid, const u_char*& buf, int& n, double arg_start_time,
-                           double arg_last_time, int arg_rpc_len)
+RPC_CallInfo::RPC_CallInfo(uint32_t arg_xid, const u_char*& buf, int& n, int64_t arg_start_time,
+                           int64_t arg_last_time, int arg_rpc_len)
 	{
 	xid = arg_xid;
 	stamp = 0;
@@ -124,7 +124,7 @@ RPC_Interpreter::~RPC_Interpreter()
 	}
 
 int RPC_Interpreter::DeliverRPC(const u_char* buf, int n, int rpclen, bool is_orig,
-                                double start_time, double last_time)
+                                int64_t start_time, int64_t last_time)
 	{
 	uint32_t xid = extract_XDR_uint32(buf, n);
 	uint32_t msg_type = extract_XDR_uint32(buf, n);
@@ -633,7 +633,7 @@ void Contents_RPC::DeliverStream(int len, const u_char* data, bool orig)
 				last_frag = false;
 				state = WAIT_FOR_MARKER;
 				start_time = run_state::network_time;
-				// no break. fall through
+				[[fallthrough]];
 
 			case WAIT_FOR_MARKER:
 				{
@@ -749,7 +749,7 @@ void RPC_Analyzer::Done()
 	interp->Timeout();
 	}
 
-void RPC_Analyzer::ExpireTimer(double /* t */)
+void RPC_Analyzer::ExpireTimer(int64_t /* t */)
 	{
 	Event(connection_timeout);
 	session_mgr->Remove(Conn());
