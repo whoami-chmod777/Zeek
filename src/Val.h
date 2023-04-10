@@ -14,6 +14,7 @@
 #include "zeek/Timer.h"
 #include "zeek/Type.h"
 #include "zeek/ZVal.h"
+#include "zeek/ZeekTime.h"
 #include "zeek/net_util.h"
 
 // We have four different port name spaces: TCP, UDP, ICMP, and UNKNOWN.
@@ -429,18 +430,34 @@ public:
 	// Same as for IntVal: no Get() method needed.
 	};
 
-#define Microseconds 1e-6
-#define Milliseconds 1e-3
-#define Seconds 1.0
-#define Minutes (60 * Seconds)
-#define Hours (60 * Minutes)
-#define Days (24 * Hours)
+[[deprecated("Remove in v6.1. Use the constants in zeek::time.")]] constexpr double Nanoseconds = 1;
+[[deprecated("Remove in v6.1. Use the constants in zeek::time.")]] constexpr double Microseconds =
+	static_cast<int64_t>(1e3);
+[[deprecated("Remove in v6.1. Use the constants in zeek::time.")]] constexpr double Milliseconds =
+	static_cast<int64_t>(1e6);
+[[deprecated("Remove in v6.1. Use the constants in zeek::time.")]] constexpr double Seconds =
+	static_cast<int64_t>(1e9);
+[[deprecated(
+	"Remove in v6.1. Use the constants in zeek::time.")]] constexpr double Minutes = 60 * Seconds;
+[[deprecated("Remove in v6.1. Use the constants in zeek::time.")]] constexpr double Hours = 60 *
+                                                                                            Minutes;
+[[deprecated("Remove in v6.1. Use the constants in zeek::time.")]] constexpr double Days = 24 *
+                                                                                           Hours;
 
-class IntervalVal final : public detail::DoubleValImplementation
+class IntervalVal final : public detail::IntValImplementation
 	{
 public:
-	IntervalVal(double quantity, double units = Seconds)
-		: detail::DoubleValImplementation(base_type(TYPE_INTERVAL), quantity * units)
+	[[deprecated("Remove in v6.1. Time is now stored in nanoseconds as int64_t "
+	             "values.")]] explicit IntervalVal(double quantity, double units = 1e9)
+		: detail::IntValImplementation(base_type(TYPE_INTERVAL),
+	                                   static_cast<int64_t>(quantity * units))
+		{
+		}
+
+	template <typename T, typename std::enable_if_t<std::is_integral_v<T>, bool> = true>
+	IntervalVal(T quantity, zeek::time::Units units = zeek::time::Seconds)
+		: detail::IntValImplementation(base_type(TYPE_INTERVAL),
+	                                   static_cast<int64_t>(quantity) * units)
 		{
 		}
 
@@ -450,10 +467,27 @@ protected:
 	void ValDescribe(ODesc* d) const override;
 	};
 
-class TimeVal final : public detail::DoubleValImplementation
+class TimeVal final : public detail::IntValImplementation
 	{
 public:
-	TimeVal(double t) : detail::DoubleValImplementation(base_type(TYPE_TIME), t) { }
+	/**
+	 * Construct a new TimeVal from a double value containing a timestamp in seconds.
+	 */
+	[[deprecated("Remove in v6.1. Time is now stored in nanoseconds as int64_t "
+	             "values.")]] explicit TimeVal(double t)
+		: detail::IntValImplementation(base_type(TYPE_TIME),
+	                                   static_cast<int64_t>(t * zeek::time::Seconds))
+		{
+		}
+
+	/**
+	 * Construct a new TimeVal from an integer value containing a timestamp in nanoseconds.
+	 */
+	template <typename T, typename std::enable_if_t<std::is_integral_v<T>, bool> = true>
+	TimeVal(T t, zeek::time::Units = zeek::time::Seconds)
+		: detail::IntValImplementation(base_type(TYPE_TIME), static_cast<int64_t>(t))
+		{
+		}
 
 	// Same as for IntVal: no Get() method needed.
 	};

@@ -370,6 +370,7 @@ set(MAIN_SRCS
     WeirdState.cc
     ZeekArgs.cc
     ZeekString.cc
+    ZeekTime.cc
     ZVal.cc
 
     ${SUPERVISOR_SRCS}

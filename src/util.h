@@ -441,13 +441,16 @@ FILE* open_file(const std::string& path, const std::string& mode = "r");
 // (In pseudo-realtime mode this is faked to be the start time of the
 // trace plus the time interval Zeek has been running. To avoid this,
 // call with real=true).
-extern double current_time(bool real = false);
+[[deprecated("Remove in v6.1. Use zeek::time::current_time().")]] extern double
+current_time(bool real = false);
 
 // Convert a time represented as a double to a timeval struct.
-extern struct timeval double_to_timeval(double t);
+[[deprecated("Remove in v6.1. Use zeek::time::double_to_timeval().")]] extern struct timeval
+double_to_timeval(double t);
 
 // Return > 0 if tv_a > tv_b, 0 if equal, < 0 if tv_a < tv_b.
-extern int time_compare(struct timeval* tv_a, struct timeval* tv_b);
+[[deprecated("Remove in v6.1. Use zeek::time::time_compare().")]] extern int
+time_compare(struct timeval* tv_a, struct timeval* tv_b);
 
 // Returns the CPU time consumed to date.
 extern double curr_CPU_time();
