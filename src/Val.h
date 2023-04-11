@@ -1202,8 +1202,40 @@ public:
 	// but we use the names so that in the future if it would
 	// be helpful, we can track the intent of the underlying
 	// value representing a time or an interval.
-	void AssignTime(int field, double new_val) { Assign(field, new_val); }
-	void AssignInterval(int field, double new_val) { Assign(field, new_val); }
+	[[deprecated("Remove in v6.1. Use version that takes int64_t value in nanoseconds.")]] void
+	AssignTime(int field, double new_val)
+		{
+		Assign(field, static_cast<int64_t>(new_val * zeek::time::Seconds));
+		}
+	[[deprecated("Remove in v6.1. Use version that takes int64_t value in nanoseconds.")]] void
+	AssignInterval(int field, double new_val)
+		{
+		Assign(field, static_cast<int64_t>(new_val * zeek::time::Seconds));
+		}
+
+	/**
+	 * Utility method for assigning a field to a time value.
+	 *
+	 * @param field the index of the field to assign
+	 * @param new_val a timestamp
+	 * @param units the units of the timestamp being passed in
+	 */
+	void AssignTime(int field, int64_t new_val, zeek::time::Units units = zeek::time::Nanoseconds)
+		{
+		Assign(field, new_val * units);
+		}
+	/**
+	 * Utility method for assigning a field to a time interval.
+	 *
+	 * @param field the index of the field to assign
+	 * @param new_val an interval value
+	 * @param units the units of the interval being passed in
+	 */
+	void AssignInterval(int field, int64_t new_val,
+	                    zeek::time::Units units = zeek::time::Nanoseconds)
+		{
+		Assign(field, new_val * units);
+		}
 
 	void Assign(int field, StringVal* new_val)
 		{
