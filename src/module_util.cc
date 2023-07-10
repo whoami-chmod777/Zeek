@@ -89,11 +89,11 @@ TEST_CASE("module_util make_full_var_name")
 	CHECK(make_full_var_name(nullptr, "GLOBAL::var") == "var");
 	CHECK(make_full_var_name(GLOBAL_MODULE_NAME, "var") == "var");
 	CHECK(make_full_var_name(nullptr, "notglobal::var") == "notglobal::var");
-	CHECK(make_full_var_name(nullptr, "::var") == "::var");
+	CHECK(make_full_var_name(nullptr, "::var") == "var");
 
 	CHECK(make_full_var_name("module", "var") == "module::var");
 	CHECK(make_full_var_name("module::", "var") == "module::var");
-	CHECK(make_full_var_name("", "var") == "::var");
+	CHECK(make_full_var_name("", "var") == "::var"); // is that actually useful?
 	}
 
 string make_full_var_name(const char* module_name, const char* var_name)
@@ -101,6 +101,10 @@ string make_full_var_name(const char* module_name, const char* var_name)
 	if ( ! module_name || streq(module_name, GLOBAL_MODULE_NAME) || strstr(var_name, "::") )
 		{
 		if ( streq(GLOBAL_MODULE_NAME, extract_module_name(var_name).c_str()) )
+			return extract_var_name(var_name);
+
+		// If no module given and varname starts with "::" this is a global identifier.
+		if ( var_name == strstr(var_name, "::") )
 			return extract_var_name(var_name);
 
 		return var_name;
