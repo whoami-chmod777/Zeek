@@ -1170,6 +1170,10 @@ void RecordType::AddField(unsigned int field, const TypeDecl* td)
 		return;
 		}
 
+	if ( strstr(td->id, ":") )
+		reporter->Deprecation(
+			util::fmt("Remove in v7.1: Colons in field names are deprecated: '%s'", td->id));
+
 	field_ids.insert(std::string(td->id));
 
 	auto a = td->attrs;

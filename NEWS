@@ -61,6 +61,9 @@ Deprecated Functionality
 
 - Accessing globals with ``GLOBAL::name`` has been deprecated. Use ``::name`` instead.
 
+- Declaring record fields containing ``::`` has been deprecated. Mostly to
+  avoid confusion.
+
 Zeek 6.0.0
 ==========
 
