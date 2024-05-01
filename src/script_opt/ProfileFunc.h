@@ -678,8 +678,10 @@ private:
     std::string LocWithFunc(const Location* loc) const {
         auto res = func_name_prefix + std::to_string(loc->first_line);
 
-        if ( loc->first_line != loc->last_line )
-            res += "-" + std::to_string(loc->last_line);
+        if ( loc->first_line != loc->last_line ) {
+            res.append("-");
+            res.append(std::to_string(loc->last_line));
+        }
 
         return res;
     }

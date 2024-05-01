@@ -99,7 +99,7 @@ bool Binary::DoInit(const ReaderInfo& info, int num_fields, const Field* const* 
         std::size_t last = path.find_last_not_of('/');
 
         if ( last == string::npos ) // Nothing but slashes -- weird but ok...
-            path = "/";
+            path.erase(1, path.size() - 1);
         else
             path.erase(last + 1);
 

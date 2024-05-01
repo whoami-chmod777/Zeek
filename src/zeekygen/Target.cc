@@ -368,7 +368,8 @@ void PackageTarget::DoGenerate() const {
 
     for ( manifest_t::const_iterator it = pkg_manifest.begin(); it != pkg_manifest.end(); ++it ) {
         string header = util::fmt("Package: %s", it->first->Name().c_str());
-        header += "\n" + string(header.size(), '=');
+        header.append("\n");
+        header.append(string(header.size() - 1, '='));
 
         fprintf(file.f, "%s\n\n", header.c_str());
 
