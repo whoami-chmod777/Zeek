@@ -10,10 +10,10 @@ btest_jobs: &BTEST_JOBS 4
 btest_retries: &BTEST_RETRIES 2
 memory: &MEMORY 16GB
 
-config: &CONFIG --build-type=release --disable-broker-tests --prefix=$CIRRUS_WORKING_DIR/install --ccache --enable-werror
+config: &CONFIG --build-type=release --disable-broker-tests --prefix=$CIRRUS_WORKING_DIR/install --ccache --enable-werror --disable-spicy
 no_spicy_config: &NO_SPICY_CONFIG --build-type=release --disable-broker-tests --disable-spicy --prefix=$CIRRUS_WORKING_DIR/install --ccache --enable-werror
-static_config: &STATIC_CONFIG --build-type=release --disable-broker-tests --enable-static-broker --enable-static-binpac --prefix=$CIRRUS_WORKING_DIR/install --ccache --enable-werror
-binary_config: &BINARY_CONFIG --prefix=$CIRRUS_WORKING_DIR/install --libdir=$CIRRUS_WORKING_DIR/install/lib --binary-package --enable-static-broker --enable-static-binpac --disable-broker-tests --build-type=Release --ccache --enable-werror
+static_config: &STATIC_CONFIG --build-type=release --disable-broker-tests --enable-static-broker --enable-static-binpac --prefix=$CIRRUS_WORKING_DIR/install --ccache --enable-werror --disable-spicy
+binary_config: &BINARY_CONFIG --prefix=$CIRRUS_WORKING_DIR/install --libdir=$CIRRUS_WORKING_DIR/install/lib --binary-package --enable-static-broker --enable-static-binpac --disable-broker-tests --build-type=Release --ccache --enable-werror --disable-spicy
 asan_sanitizer_config: &ASAN_SANITIZER_CONFIG --build-type=debug --disable-broker-tests --sanitizers=address --enable-fuzzers --enable-coverage --disable-spicy --ccache --enable-werror
 ubsan_sanitizer_config: &UBSAN_SANITIZER_CONFIG --build-type=debug --disable-broker-tests --sanitizers=undefined --enable-fuzzers --disable-spicy --ccache --enable-werror
 tsan_sanitizer_config: &TSAN_SANITIZER_CONFIG --build-type=debug --disable-broker-tests --sanitizers=thread --enable-fuzzers --disable-spicy --ccache --enable-werror
@@ -57,6 +57,7 @@ builds_only_if_template: &BUILDS_ONLY_IF_TEMPLATE
     ( ( $CIRRUS_REPO_NAME == 'zeek' || $CIRRUS_REPO_NAME == 'zeek-security' ) &&
       (
       $CIRRUS_BRANCH == 'master' ||
+      $CIRRUS_BRANCH == 'topic/timw/c++20' ||
       $CIRRUS_BRANCH =~ 'release/.*'
       )
     ) )
