@@ -71,8 +71,6 @@ set(ZEEK_ETC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/etc"
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL
                                            "Whether to write a JSON compile commands database")
 
-set(ZEEK_CXX_STD cxx_std_17 CACHE STRING "The C++ standard to use.")
-
 set(ZEEK_SANITIZERS "" CACHE STRING "Sanitizers to use when building.")
 
 set(CPACK_SOURCE_IGNORE_FILES "" CACHE STRING "Files to be ignored by CPack")
@@ -187,6 +185,7 @@ endif ()
 include(cmake/CommonCMakeConfig.cmake)
 include(cmake/FindClangTidy.cmake)
 include(cmake/CheckCompilerArch.cmake)
+include(cmake/RequireCXXStd.cmake)
 
 string(TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_LOWER)
 
