@@ -921,13 +921,14 @@ public:
         if ( binary ) {
             char key = char(random() % 26) + 'A';
             snprintf(key_file, 100, "%d.%d-%c.key", Length(), max_distance, key);
-            std::ofstream f(key_file, std::ios::binary | std::ios::out | std::ios::trunc);
+            FILE* f = std::fopen(key_file, "wb");
             for ( int idx = 0; idx < Capacity(); idx++ )
                 if ( ! table[idx].Empty() ) {
                     int key_size = table[idx].key_size;
-                    f.write((const char*)&key_size, sizeof(int));
-                    f.write(table[idx].GetKey(), table[idx].key_size);
+                    std::fwrite((const char*)&key_size, sizeof(int), 1, f);
+                    std::fwrite(table[idx].GetKey(), table[idx].key_size, 1, f);
                 }
+            std::fclose(f);
         }
         else {
             char key = char(random() % 26) + 'A';
