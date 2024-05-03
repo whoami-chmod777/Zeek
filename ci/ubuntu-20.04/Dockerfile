@@ -14,8 +14,8 @@ RUN apt-get update && apt-get -y install \
     cmake \
     curl \
     flex \
-    g++ \
-    gcc \
+    g++-10 \
+    gcc-10 \
     git \
     lcov \
     libkrb5-dev \
@@ -37,3 +37,5 @@ RUN apt-get update && apt-get -y install \
 
 RUN pip3 install websockets junit2html
 RUN gem install coveralls-lcov
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 10
+RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 10

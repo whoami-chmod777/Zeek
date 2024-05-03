@@ -13,8 +13,8 @@ RUN dnf -y install \
     cmake \
     diffutils \
     flex \
-    gcc \
-    gcc-c++ \
+    gcc-toolset-10-gcc \
+    gcc-toolset-10-gcc-c++ \
     git \
     libpcap-devel \
     make \
@@ -31,3 +31,10 @@ RUN dnf -y install \
   && dnf clean all && rm -rf /var/cache/dnf
 
 RUN pip3 install websockets junit2html
+
+RUN echo 'unset BASH_ENV PROMPT_COMMAND ENV' > /usr/bin/zeek-ci-env && \
+    echo 'source /opt/rh/gcc-toolset-10/enable' >> /usr/bin/zeek-ci-env
+
+ENV BASH_ENV="/usr/bin/zeek-ci-env" \
+    ENV="/usr/bin/zeek-ci-env" \
+    PROMPT_COMMAND=". /usr/bin/zeek-ci-env"
