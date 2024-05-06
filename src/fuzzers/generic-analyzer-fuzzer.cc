@@ -31,7 +31,16 @@ static const char* FUZZ_ANALYZER_TRANSPORT = TOSTRING(ZEEK_FUZZ_ANALYZER_TRANSPO
 
 class Fuzzer {
 public:
-    Fuzzer(TransportProto proto, const zeek::Tag& analyzer_tag) : proto{proto}, analyzer_tag{analyzer_tag} {}
+    Fuzzer(TransportProto proto, const zeek::Tag& analyzer_tag) : proto{proto}, analyzer_tag{analyzer_tag} {
+        // Don't enable every analyzer, since we only want to fuzz the one analyzer that's being focused on.
+        // The rest just get in the way.
+        zeek::analyzer_mgr->DisableAllAnalyzers();
+        zeek::analyzer_mgr->EnableAnalyzer(analyzer_tag);
+        const auto& pia_tcp_tag = zeek::analyzer_mgr->GetComponentTag("PIA_TCP");
+        zeek::analyzer_mgr->EnableAnalyzer(pia_tcp_tag);
+        const auto& pia_udp_tag = zeek::analyzer_mgr->GetComponentTag("PIA_UDP");
+        zeek::analyzer_mgr->EnableAnalyzer(pia_udp_tag);
+    }
 
     virtual ~Fuzzer(){};
 
