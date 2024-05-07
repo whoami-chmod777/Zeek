@@ -131,14 +131,17 @@ add_generic_analyzer_fuzz_target(syslog udp)
 # add_generic_analyzer_fuzz_target(gssapi)  # only samples are embedded in smb
 # add_generic_analyzer_fuzz_target(ident)   # no pcap files
 # add_generic_analyzer_fuzz_target(krb)     # should these just be handled by
-# smb? add_generic_analyzer_fuzz_target(krb_tcp) # should these just be handled
-# by smb? add_generic_analyzer_fuzz_target(rsh)     # login - no pcap files
+# smb?
+# add_generic_analyzer_fuzz_target(krb_tcp) # should these just be handled
+# by smb?
+# add_generic_analyzer_fuzz_target(rsh)     # login - no pcap files
 # add_generic_analyzer_fuzz_target(rlogin)  # login - no pcap files
 # add_generic_analyzer_fuzz_target(telnet)  # login - no pcap files
 # add_generic_analyzer_fuzz_target(netbios) # no pcap files
 # add_generic_analyzer_fuzz_target(ntlm)    # only samples are embedded in
-# dce-rpc or smb add_generic_analyzer_fuzz_target(xdr)     # rpc - no pcap files
+# dce-rpc or smb
+# add_generic_analyzer_fuzz_target(xdr)     # rpc - no pcap files
 # add_generic_analyzer_fuzz_target(sip_tcp) # unnecessary?
 # add_generic_analyzer_fuzz_target(socks)   # can this one be tested by adding
-# SOCKS pkts to the HTTP corpus? add_generic_analyzer_fuzz_target(xmpp)    # no
-# pcap files
+# SOCKS pkts to the HTTP corpus?
+# add_generic_analyzer_fuzz_target(xmpp)    # no pcap files
