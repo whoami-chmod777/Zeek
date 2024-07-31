@@ -51,7 +51,7 @@ extern "C" int LLVMFuzzerInitialize(int* argc, char*** argv) {
 
     std::vector<std::string> default_script_options_to_set = {
         "Site::local_nets={10.0.0.0/8}",  "Log::default_writer=Log::WRITER_NONE", "Reporter::info_to_stderr=F",
-        "Reporter::warnings_to_stderr=F", "Reporter::errors_to_stderr=F",
+        "Reporter::warnings_to_stderr=F", "Reporter::errors_to_stderr=F",         "Telemetry::metrics_address=0.0.0.0",
     };
 
     // Prepend default options.
