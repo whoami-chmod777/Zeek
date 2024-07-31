@@ -93,6 +93,7 @@ target_link_libraries(zeek_fuzzer_shared PUBLIC ${zeek_fuzzer_shared_deps}
                                                 ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_DL_LIBS})
 
 add_fuzz_target(packet)
+add_fuzz_target(caplen)
 add_fuzz_target(dns)
 add_fuzz_target(websocket)
 
