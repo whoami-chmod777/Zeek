@@ -5901,6 +5901,14 @@ export {
 	const civetweb_threads: count = 2 &redef;
 }
 
+module Storage;
+
+export {
+	## The interval used by the storage framework for automatic expiration
+	## of elements in all backends that don't support it natively.
+	const expire_interval = 5.0 secs &redef;
+}
+
 module GLOBAL;
 
 ## Seed for hashes computed internally for probabilistic data structures. Using
