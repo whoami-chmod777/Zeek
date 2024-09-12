@@ -24,6 +24,23 @@ export {
 		);
 	};
 
+	## Options record for the built-in Redis backend.
+	type RedisOptions: record {
+		# Address to the server
+		server_addr: string;
+
+		# Port for the server
+		server_port: port;
+
+		# Server unix socket file. This can be used instead of the
+		# address and port above to connect to a local server.
+		server_unix_socket: string;
+
+		# Prefix used in key values stored to differentiate varying
+		# types of data on the same server.
+		key_prefix: string;
+	};
+
 	## Opens a new backend connection based on a configuration object.
 	##
 	## btype: A tag indicating what type of backend should be opened.
