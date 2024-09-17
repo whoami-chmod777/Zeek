@@ -39,6 +39,9 @@ export {
 		# Prefix used in key values stored to differentiate varying
 		# types of data on the same server.
 		key_prefix: string;
+
+		# Amount of time to wait for operations to complete.
+		op_timeout: interval &default=5sec;
 	};
 
 	## Record for passing arguments to ``put``
