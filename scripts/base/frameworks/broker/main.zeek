@@ -174,8 +174,11 @@ export {
 		LOG_DEBUG,
 	};
 
-	## The possible log event severity levels for Broker.
+	## The log event severity level for the Broker log output.
 	const log_severity_level = LOG_WARNING &redef;
+
+	## If set to true, also print Broker log output to stderr.
+	const mirror_log_to_stderr = F &redef;
 
 	type ErrorCode: enum {
 		## The unspecified default error code.

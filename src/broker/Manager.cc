@@ -131,13 +131,14 @@ public:
         }
     }
 
-    void Drain(std::list<broker::event_ptr> events) {
+    auto Drain() {
+        std::list<broker::event_ptr> events;
         std::lock_guard<std::mutex> lock(mutex_);
-        if ( queue_.empty() ) {
-            return;
+        if ( ! queue_.empty() ) {
+            queue_.swap(events);
+            flare_.Extinguish();
         }
-        queue_.swap(events);
-        flare_.Extinguish();
+        return events;
     }
 
     auto FlareFd() const noexcept { return flare_.FD(); }
@@ -170,18 +171,17 @@ std::optional<BrokerSeverityLevel> broker_severity_level_from_string(const char*
 
 class LoggerAdapter : public broker::event_observer {
 public:
-    using severity_level = broker::event::severity_level;
+    using SeverityLevel = broker::event::severity_level;
 
-    explicit LoggerAdapter(LoggerQueuePtr queue) : queue_(std::move(queue)) {}
+    explicit LoggerAdapter(SeverityLevel severity, LoggerQueuePtr queue)
+        : severity_(severity), queue_(std::move(queue)) {}
 
     void observe(broker::event_ptr what) override { queue_->Push(std::move(what)); }
 
-    bool accepts(severity_level severity, broker::event::component_type component) const override {
-        return severity <= severity_;
-    }
+    bool accepts(SeverityLevel severity, broker::event::component_type) const override { return severity <= severity_; }
 
 private:
-    severity_level severity_;
+    SeverityLevel severity_;
     LoggerQueuePtr queue_;
 };
 
@@ -270,6 +270,7 @@ public:
     broker::endpoint endpoint;
     broker::subscriber subscriber;
     LoggerQueuePtr loggerQueue;
+    bool mirror_log_to_stderr = false;
 };
 
 const broker::endpoint_info Manager::NoPeer{{}, {}};
@@ -412,11 +413,12 @@ void Manager::InitPostScript() {
         reporter->FatalError("Invalid Broker::log_severity_level: %d", logSeverityVal);
     auto verbosity = static_cast<BrokerSeverityLevel>(logSeverityVal);
     auto queue = std::make_shared<LoggerQueue>();
-    auto adapter = std::make_shared<LoggerAdapter>(queue);
+    auto adapter = std::make_shared<LoggerAdapter>(verbosity, queue);
     broker::logger(adapter); // *must* be called before creating the BrokerState
 
     auto cqs = get_option("Broker::congestion_queue_size")->AsCount();
     bstate = std::make_shared<BrokerState>(std::move(config), cqs, queue);
+    bstate->mirror_log_to_stderr = get_option("Broker::mirror_log_to_stderr")->AsBool();
 
     if ( ! iosource_mgr->RegisterFd(bstate->subscriber.fd(), this) )
         reporter->FatalError("Failed to register broker subscriber with iosource_mgr");
@@ -505,6 +507,8 @@ void Manager::Terminate() {
         // This doesn't loop directly over data_stores, because CloseStore
         // modifies the map and invalidates iterators.
         CloseStore(x);
+
+    ProcessLogEvents();
 
     FlushLogBuffers();
 }
@@ -1127,17 +1131,28 @@ void Manager::ProcessLogEvents() {
         }
     };
 
-    std::list<broker::event_ptr> events;
-    bstate->loggerQueue->Drain(events);
-    for ( auto& event : events ) {
-        auto record = make_intrusive<RecordVal>(lpli);
-        record->AssignTime(0, run_state::network_time);
-        record->Assign(1, evType(event->severity));
-        auto ev = make_intrusive<StringVal>(event->identifier);
-        record->Assign(2, ev.get());
-        auto msg = make_intrusive<StringVal>(event->description);
-        record->Assign(4, ev.get());
-        log_mgr->Write(plval.get(), record.get());
+    constexpr const char* severity_names_tbl[] = {"critical", "error", "warning", "info", "verbose", "debug"};
+
+    auto mirrorToStderr = bstate->mirror_log_to_stderr;
+    auto events = bstate->loggerQueue->Drain();
+    while ( ! events.empty() ) {
+        for ( auto& event : events ) {
+            /*
+            auto record = make_intrusive<RecordVal>(lpli);
+            record->AssignTime(0, run_state::network_time);
+            record->Assign(1, evType(event->severity));
+            auto ev = make_intrusive<StringVal>(event->identifier);
+            record->Assign(2, ev.get());
+            auto msg = make_intrusive<StringVal>(event->description);
+            record->Assign(4, ev.get());
+            log_mgr->Write(plval.get(), record.get());
+            */
+            if ( mirrorToStderr ) {
+                fprintf(stderr, "[BROKER/%s] %s\n", severity_names_tbl[static_cast<int>(event->severity)],
+                        event->description.c_str());
+            }
+        }
+        events = bstate->loggerQueue->Drain();
     }
 }
 
